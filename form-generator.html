@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Invitation Form Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: fadeIn 0.6s ease-in;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        .form-section {
+            margin-bottom: 35px;
+            padding-bottom: 35px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .form-section:last-of-type {
+            border-bottom: none;
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '';
+            width: 4px;
+            height: 25px;
+            background: #667eea;
+            margin-right: 12px;
+            border-radius: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #333;
+            font-size: 0.95em;
+        }
+
+        label .required {
+            color: #e74c3c;
+            margin-left: 3px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.95em;
+            font-family: inherit;
+            transition: all 0.3s ease;
+            resize: vertical;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        input[type="time"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+        }
+
+        .checkbox-group,
+        .radio-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 15px;
+            margin-top: 12px;
+        }
+
+        .radio-group {
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+
+        .checkbox-item,
+        .radio-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-item input[type="checkbox"],
+        .radio-item input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            margin-right: 8px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .checkbox-item label,
+        .radio-item label {
+            margin: 0;
+            font-weight: 400;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .conditional-input {
+            display: none;
+            margin-top: 10px;
+            padding: 12px;
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            border-radius: 4px;
+        }
+
+        .conditional-input.active {
+            display: block;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .gallery-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .gallery-input-item {
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+        }
+
+        .gallery-input-item label {
+            font-size: 0.85em;
+            margin-bottom: 6px;
+        }
+
+        .gallery-input-item input {
+            padding: 8px;
+            font-size: 0.9em;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+            justify-content: center;
+        }
+
+        button {
+            padding: 14px 35px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            flex: 1;
+            max-width: 250px;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-generate:active {
+            transform: translateY(0);
+        }
+
+        .btn-reset {
+            background: #ecf0f1;
+            color: #333;
+            flex: 1;
+            max-width: 250px;
+        }
+
+        .btn-reset:hover {
+            background: #d5dbdb;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .modal-header h2 {
+            color: #667eea;
+            font-size: 1.8em;
+        }
+
+        .close-btn {
+            font-size: 2em;
+            font-weight: bold;
+            color: #999;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .prompt-display {
+            background: #f5f5f5;
+            padding: 25px;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+            line-height: 1.7;
+            font-size: 0.95em;
+            color: #333;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 500px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+        }
+
+        .copy-btn {
+            background: #667eea;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 20px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .copy-btn.copied {
+            background: #27ae60;
+        }
+
+        .helper-text {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                max-height: 0;
+            }
+            to {
+                opacity: 1;
+                max-height: 500px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .form-container {
+                padding: 25px;
+            }
+
+            .checkbox-group,
+            .radio-group {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn-generate,
+            .btn-reset {
+                max-width: 100%;
+            }
+
+            .modal-content {
+                padding: 20px;
+                margin: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💍 Wedding Invitation Generator</h1>
+            <p>Buat prompt AI profesional untuk website undangan pernikahan kamu</p>
+        </div>
+
+        <form class="form-container" id="weddingForm">
+            <!-- SECTION 1: INFORMASI PENGANTIN -->
+            <div class="form-section">
+                <h3 class="section-title">Informasi Pengantin</h3>
+
+                <div class="form-group">
+                    <label for="bridegroomName">Nama Lengkap Pengantin Pria <span class="required">*</span></label>
+                    <input type="text" id="bridegroomName" name="bridegroomName" placeholder="Contoh: Ahmad Wijaya" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="brideNama">Nama Lengkap Pengantin Wanita <span class="required">*</span></label>
+                    <input type="text" id="brideNama" name="brideNama" placeholder="Contoh: Siti Nurhaliza" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="weddingDate">Tanggal Pernikahan <span class="required">*</span></label>
+                    <input type="date" id="weddingDate" name="weddingDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="akadTime">Waktu Akad Nikah <span class="required">*</span></label>
+                    <input type="time" id="akadTime" name="akadTime" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="receptionTime">Waktu Resepsi <span class="required">*</span></label>
+                    <input type="time" id="receptionTime" name="receptionTime" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="akadLocation">Lokasi Akad Nikah <span class="required">*</span></label>
+                    <input type="text" id="akadLocation" name="akadLocation" placeholder="Contoh: Masjid Al-Ikhlas, Jl. Ahmad Yani No.45, Jakarta" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="receptionLocation">Lokasi Resepsi <span class="required">*</span></label>
+                    <input type="text" id="receptionLocation" name="receptionLocation" placeholder="Contoh: Gedung Pernikahan Mewah, Jl. Sudirman No.100, Jakarta" required>
+                </div>
+            </div>
+
+            <!-- SECTION 2: TEMA DESAIN -->
+            <div class="form-section">
+                <h3 class="section-title">Tema & Desain</h3>
+
+                <div class="form-group">
+                    <label>Pilih Tema Warna Website Pernikahan <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="color1" name="colorTheme" value="Dusty Rose" required>
+                            <label for="color1">🌸 Dusty Rose</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="color2" name="colorTheme" value="Sage Green">
+                            <label for="color2">🌿 Sage Green</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="color3" name="colorTheme" value="Champagne / Gold">
+                            <label for="color3">✨ Champagne / Gold</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="color4" name="colorTheme" value="Ivory / Off White">
+                            <label for="color4">⚪ Ivory / Off White</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="color5" name="colorTheme" value="Blush Pink">
+                            <label for="color5">💕 Blush Pink</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="color6" name="colorTheme" value="Lavender / Lilac">
+                            <label for="color6">💜 Lavender / Lilac</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="color7" name="colorTheme" value="Emerald Green">
+                            <label for="color7">💚 Emerald Green</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="color8" name="colorTheme" value="Navy Blue">
+                            <label for="color8">💙 Navy Blue</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="color9" name="colorTheme" value="Terracotta / Burnt Orange">
+                            <label for="color9">🧡 Terracotta / Burnt Orange</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="color10" name="colorTheme" value="Maroon / Wine Red">
+                            <label for="color10">🔴 Maroon / Wine Red</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="color11" name="colorTheme" value="Peach / Coral">
+                            <label for="color11">🍑 Peach / Coral</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="color12" name="colorTheme" value="Black & White">
+                            <label for="color12">⚫ Black & White</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="color13" name="colorTheme" value="Dusty Blue">
+                            <label for="color13">🔵 Dusty Blue</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Gaya Visual Website <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" id="style1" name="visualStyle" value="Minimalis elegan" required>
+                            <label for="style1">Minimalis elegan</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="style2" name="visualStyle" value="Rustic">
+                            <label for="style2">Rustic</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="style3" name="visualStyle" value="Floral / Botanical">
+                            <label for="style3">Floral / Botanical</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="style4" name="visualStyle" value="Modern glam">
+                            <label for="style4">Modern glam</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="style5" name="visualStyle" value="Classic / Traditional">
+                            <label for="style5">Classic / Traditional</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="style6" name="visualStyle" value="Bohemian">
+                            <label for="style6">Bohemian</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="style7" name="visualStyle" value="Cute & Fun">
+                            <label for="style7">Cute & Fun</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="style8" name="visualStyle" value="Kultural / Adat">
+                            <label for="style8">Kultural / Adat</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="style9" name="visualStyle" value="Dark mode / Moody">
+                            <label for="style9">Dark mode / Moody</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" id="style10" name="visualStyle" value="Monokrom hitam putih">
+                            <label for="style10">Monokrom hitam putih</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3: ELEMEN WEBSITE -->
+            <div class="form-section">
+                <h3 class="section-title">Elemen Website</h3>
+
+                <div class="form-group">
+                    <label>Elemen yang ingin ditampilkan (Boleh pilih lebih dari satu)</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="elem1" name="elements" value="hero">
+                            <label for="elem1">Hero image pasangan</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="elem2" name="elements" value="countdown">
+                            <label for="elem2">Countdown timer</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="elem3" name="elements" value="rsvp">
+                            <label for="elem3">RSVP form</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="elem4" name="elements" value="gallery">
+                            <label for="elem4">Galeri foto pasangan</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="elem5" name="elements" value="music">
+                            <label for="elem5">Background music</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="elem6" name="elements" value="maps">
+                            <label for="elem6">Google Maps lokasi</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="elem7" name="elements" value="gift">
+                            <label for="elem7">Wedding gift</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="elem8" name="elements" value="wishes">
+                            <label for="elem8">Ucapan dari tamu</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HERO IMAGE CONDITIONAL -->
+                <div class="conditional-input" id="heroInput">
+                    <label for="heroLink">Link Google Drive untuk Hero Image <span class="required">*</span></label>
+                    <input type="text" id="heroLink" name="heroLink" placeholder="https://drive.google.com/file/d/...">
+                    <p class="helper-text">Pastikan file dapat diakses publik</p>
+                </div>
+
+                <!-- GALLERY IMAGES CONDITIONAL -->
+                <div class="conditional-input" id="galleryInput">
+                    <label>Link Google Drive untuk Galeri Foto Pasangan (Hingga 6 foto)</label>
+                    <div class="gallery-inputs" id="galleryInputsContainer">
+                        <div class="gallery-input-item">
+                            <label for="gallery1">Foto 1</label>
+                            <input type="text" id="gallery1" name="gallery1" placeholder="Link Google Drive">
+                        </div>
+                        <div class="gallery-input-item">
+                            <label for="gallery2">Foto 2</label>
+                            <input type="text" id="gallery2" name="gallery2" placeholder="Link Google Drive">
+                        </div>
+                        <div class="gallery-input-item">
+                            <label for="gallery3">Foto 3</label>
+                            <input type="text" id="gallery3" name="gallery3" placeholder="Link Google Drive">
+                        </div>
+                        <div class="gallery-input-item">
+                            <label for="gallery4">Foto 4</label>
+                            <input type="text" id="gallery4" name="gallery4" placeholder="Link Google Drive">
+                        </div>
+                        <div class="gallery-input-item">
+                            <label for="gallery5">Foto 5</label>
+                            <input type="text" id="gallery5" name="gallery5" placeholder="Link Google Drive">
+                        </div>
+                        <div class="gallery-input-item">
+                            <label for="gallery6">Foto 6</label>
+                            <input type="text" id="gallery6" name="gallery6" placeholder="Link Google Drive">
+                        </div>
+                    </div>
+                    <p class="helper-text">Opsional - isi sesuai kebutuhan Anda</p>
+                </div>
+
+                <!-- BACKGROUND MUSIC CONDITIONAL -->
+                <div class="conditional-input" id="musicInput">
+                    <label for="musicLink">Link untuk Background Music <span class="required">*</span></label>
+                    <input type="text" id="musicLink" name="musicLink" placeholder="https://drive.google.com/uc?export=download&id=...">
+                    <p class="helper-text">Format MP3 atau format audio lainnya</p>
+                </div>
+
+                <!-- WEDDING GIFT CONDITIONAL -->
+                <div class="conditional-input" id="giftInput">
+                    <label for="bankAccount">Nomor Rekening untuk Wedding Gift <span class="required">*</span></label>
+                    <input type="text" id="bankAccount" name="bankAccount" placeholder="Contoh: BCA 123456789 (Atas Nama: Ahmad Wijaya)">
+                </div>
+            </div>
+
+            <!-- SECTION 4: CERITA & UCAPAN -->
+            <div class="form-section">
+                <h3 class="section-title">Cerita & Ucapan</h3>
+
+                <div class="form-group">
+                    <label for="loveStory">Cerita Cinta Kalian <span class="required">*</span></label>
+                    <textarea id="loveStory" name="loveStory" placeholder="Ceritakan secara singkat bagaimana kalian bertemu atau perjalanan cinta kalian..." required></textarea>
+                    <p class="helper-text">Maksimal 500 karakter</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="wishesIntro">Kata-kata Pembuka untuk Kolom Ucapan dari Tamu Undangan <span class="required">*</span></label>
+                    <textarea id="wishesIntro" name="wishesIntro" placeholder="Contoh: Berkenan memberi doa dan ucapan terbaik untuk kami?" required></textarea>
+                    <p class="helper-text">Maksimal 200 karakter</p>
+                </div>
+            </div>
+
+            <!-- BUTTONS -->
+            <div class="button-group">
+                <button type="button" class="btn-generate" onclick="generatePrompt()">Buat Prompt</button>
+                <button type="reset" class="btn-reset">Reset Form</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- MODAL UNTUK MENAMPILKAN PROMPT -->
+    <div id="promptModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>✨ Prompt Siap Pakai</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="promptOutput" class="prompt-display"></div>
+            <button class="copy-btn" onclick="copyPrompt()">📋 Salin Prompt</button>
+        </div>
+    </div>
+
+    <script>
+        // Setup conditional inputs
+        const elementCheckboxes = document.querySelectorAll('input[name="elements"]');
+        
+        elementCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateConditionalInputs);
+        });
+
+        function updateConditionalInputs() {
+            const selectedElements = Array.from(document.querySelectorAll('input[name="elements"]:checked')).map(el => el.value);
+
+            document.getElementById('heroInput').classList.toggle('active', selectedElements.includes('hero'));
+            document.getElementById('galleryInput').classList.toggle('active', selectedElements.includes('gallery'));
+            document.getElementById('musicInput').classList.toggle('active', selectedElements.includes('music'));
+            document.getElementById('giftInput').classList.toggle('active', selectedElements.includes('gift'));
+        }
+
+        function generatePrompt() {
+            const form = document.getElementById('weddingForm');
+            
+            // Validasi form
+            if (!form.checkValidity()) {
+                alert('Mohon lengkapi semua field yang diperlukan');
+                form.reportValidity();
+                return;
+            }
+
+            // Get form values
+            const bridegroomName = document.getElementById('bridegroomName').value;
+            const brideNama = document.getElementById('brideNama').value;
+            const weddingDate = new Date(document.getElementById('weddingDate').value).toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const akadTime = document.getElementById('akadTime').value;
+            const receptionTime = document.getElementById('receptionTime').value;
+            const akadLocation = document.getElementById('akadLocation').value;
+            const receptionLocation = document.getElementById('receptionLocation').value;
+            const colorTheme = document.querySelector('input[name="colorTheme"]:checked').value;
+            const visualStyle = document.querySelector('input[name="visualStyle"]:checked').value;
+            const loveStory = document.getElementById('loveStory').value;
+            const wishesIntro = document.getElementById('wishesIntro').value;
+
+            // Get elements
+            const selectedElements = Array.from(document.querySelectorAll('input[name="elements"]:checked')).map(el => el.value);
+
+            // Build elements description
+            let elementsDescription = '';
+            const elementLabels = {
+                'hero': 'Hero image pasangan yang menampilkan foto profesi atau momen spesial',
+                'countdown': 'Countdown timer yang menghitung hari, jam, menit hingga hari pernikahan',
+                'rsvp': 'RSVP form untuk tamu mengkonfirmasi kehadiran',
+                'gallery': 'Galeri foto interaktif pasangan dengan lightbox effect',
+                'music': 'Background music yang dimainkan otomatis dengan kontrol volume',
+                'maps': 'Google Maps terintegrasi untuk menampilkan lokasi akad dan resepsi',
+                'gift': 'Section wedding gift dengan nomor rekening untuk amplop digital',
+                'wishes': 'Kolom ucapan dari tamu yang dapat diisi dan ditampilkan di website'
+            };
+
+            if (selectedElements.length > 0) {
+                elementsDescription = selectedElements.map(el => `- ${elementLabels[el]}`).join('\n');
+            }
+
+            // Build additional elements info
+            let additionalInfo = '';
+
+            if (selectedElements.includes('hero')) {
+                const heroLink = document.getElementById('heroLink').value;
+                if (heroLink) {
+                    additionalInfo += `\n- Foto hero pasangan dari: ${heroLink}`;
+                }
+            }
+
+            if (selectedElements.includes('gallery')) {
+                const galleryLinks = [];
+                for (let i = 1; i <= 6; i++) {
+                    const link = document.getElementById(`gallery${i}`).value;
+                    if (link) galleryLinks.push(link);
+                }
+                if (galleryLinks.length > 0) {
+                    additionalInfo += `\n- Link galeri foto yang tersedia: ${galleryLinks.join(', ')}`;
+                }
+            }
+
+            if (selectedElements.includes('music')) {
+                const musicLink = document.getElementById('musicLink').value;
+                if (musicLink) {
+                    additionalInfo += `\n- File musik background dari: ${musicLink}`;
+                }
+            }
+
+            if (selectedElements.includes('gift')) {
+                const bankAccount = document.getElementById('bankAccount').value;
+                if (bankAccount) {
+                    additionalInfo += `\n- Nomor rekening wedding gift: ${bankAccount}`;
+                }
+            }
+
+            // Generate prompt
+            const prompt = `Saya ingin kamu bertindak sebagai seorang frontend developer profesional yang membuat website undangan pernikahan digital untuk ${bridegroomName} & ${brideNama}. Website ini harus memiliki desain yang modern, elegan, dan responsif (mobile-first). Gunakan efek animasi halus saat scroll, parallax ringan, serta transisi yang lembut.
+
+**INFORMASI ACARA PERNIKAHAN:**
+- Nama Pengantin: ${bridegroomName} & ${brideNama}
+- Tanggal Pernikahan: ${weddingDate}
+- Waktu Akad Nikah: ${akadTime}
+- Waktu Resepsi: ${receptionTime}
+- Lokasi Akad Nikah: ${akadLocation}
+- Lokasi Resepsi: ${receptionLocation}
+
+**CERITA CINTA:**
+${loveStory}
+
+**TEMA DESAIN:**
+- Tema Warna: ${colorTheme}
+- Gaya Visual: ${visualStyle}
+
+**ELEMEN-ELEMEN WEBSITE YANG HARUS DITAMPILKAN:**
+${elementsDescription || '- Semua elemen standar untuk website undangan pernikahan'}
+
+${additionalInfo}
+
+**KATA-KATA PEMBUKA UNTUK KOLOM UCAPAN:**
+"${wishesIntro}"
+
+**REQUIREMENTS TEKNIS:**
+1. Gunakan HTML5, CSS3, dan JavaScript vanilla (atau framework modern seperti React/Vue jika diperlukan)
+2. Website harus fully responsive dan bekerja sempurna di mobile, tablet, dan desktop
+3. Pastikan loading time cepat dan optimasi untuk SEO
+4. Implementasikan smooth scrolling, fade-in animations, dan hover effects yang elegan
+5. Gunakan custom fonts yang sesuai dengan tema (Google Fonts recommended)
+6. Integrasikan Google Maps dengan marker untuk lokasi akad dan resepsi
+7. Buat RSVP form yang user-friendly dengan validasi input
+8. Implementasikan sistem ucapan yang dapat disimpan (gunakan localStorage atau backend)
+9. Pastikan semua link Google Drive dan media eksternal ter-load dengan baik
+10. Buat QR code untuk kemudahan sharing
+
+Buatkan kode HTML, CSS, dan JavaScript yang lengkap dan siap digunakan. Pastikan design cohesive, user experience optimal, dan semua fitur berfungsi dengan sempurna.`;
+
+            // Display prompt in modal
+            document.getElementById('promptOutput').textContent = prompt;
+            document.getElementById('promptModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('promptModal').classList.remove('active');
+        }
+
+        function copyPrompt() {
+            const promptText = document.getElementById('promptOutput').textContent;
+            navigator.clipboard.writeText(promptText).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = '✅ Berhasil Disalin!';
+                btn.classList.add('copied');
+                
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            }).catch(() => {
+                alert('Gagal menyalin prompt');
+            });
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('promptModal');
+            if (event.target == modal) {
+                modal.classList.remove('active');
+            }
+        }
+
+        // Initial setup
+        updateConditionalInputs();
+    </script>
+</body>
+</html>
